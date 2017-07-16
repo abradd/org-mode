@@ -229,6 +229,7 @@ This does two different kinds of triggers:
 
       ;; Go through all the triggers
       (while (setq tr (pop triggers))
+	;;(message "%s" tr)
 	(cond
 	 ((and (not org-depend-doing-chain-find-next)
 	       (string-match "\\`chain-find-next(\\b\\(.+?\\)\\b\\(.*\\))\\'" tr))
@@ -331,23 +332,32 @@ This does two different kinds of triggers:
 	  (setq kwd (match-string 1 tr))
           (org-depend-act-on-sibling (format "chain-siblings(%s)" kwd)
                                      (org-todo kwd)))
-	 ((string-match "\\`\\(\\S-+\\)(\\(.*?\\))\\'" tr)
+	 ;;((string-match "\\`\\(\\S-+\\)(\\(.*?\\),?\\([\\+\\./0-9]+?\\)?)\\'" tr)
+	 ((string-match "\\`\\(\\S-+\\)(\\([A-z0-9-]*?\\)\\s-?,?\\s-?\\([A-z\\+\\./0-9-: ]+?\\)?)\\'" tr)
 	  ;; This seems to be ENTRY_ID(KEYWORD)
 	  (setq id (match-string 1 tr)
 		kwd (match-string 2 tr)
+		sch (match-string 3 tr)
 		p1 (org-find-entry-with-id id))
 	  ;; first check current buffer, then all files
+	  ;;(message "%s\n%s\n%s" id kwd sch)
 	  (if p1
 	    ;; there is an entry with this ID, mark it TODO
 	    (save-excursion
 	      (goto-char p1)
-	      (org-todo kwd))
+	      (org-todo kwd)
+	      ;;should probably put a catch here for malformed date/time
+	      (when sch
+		(org-schedule nil sch)))
 	    (when (setq p2 (org-id-find id))
 	      (save-excursion
 		(save-window-excursion
 		  (find-file (car p2))
 		  (goto-char (cdr p2))
-		  (org-todo kwd))))))
+		  (org-todo kwd)
+		  ;;should probably put a catch here for malformed date/time
+		  (when sch
+		    (org-schedule nil sch)))))))
          ((string-match "\\`chain-siblings-scheduled\\'" tr)
           (let ((time (org-get-scheduled-time pos)))
             (when time
