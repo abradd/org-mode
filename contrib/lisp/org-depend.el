@@ -229,7 +229,6 @@ This does two different kinds of triggers:
 
       ;; Go through all the triggers
       (while (setq tr (pop triggers))
-	;;(message "%s" tr)
 	(cond
 	 ((and (not org-depend-doing-chain-find-next)
 	       (string-match "\\`chain-find-next(\\b\\(.+?\\)\\b\\(.*\\))\\'" tr))
@@ -332,15 +331,13 @@ This does two different kinds of triggers:
 	  (setq kwd (match-string 1 tr))
           (org-depend-act-on-sibling (format "chain-siblings(%s)" kwd)
                                      (org-todo kwd)))
-	 ;;((string-match "\\`\\(\\S-+\\)(\\(.*?\\),?\\([\\+\\./0-9]+?\\)?)\\'" tr)
-	 ((string-match "\\`\\(\\S-+\\)(\\([A-z0-9-]*?\\)\\s-?,?\\s-?\\([A-z\\+\\./0-9-: ]+?\\)?)\\'" tr)
+	 ((string-match "\\`\\(\\S-+\\)(\\(.*?\\),?\\([\\+\\./0-9A-Za-z:-]+?\\)?)\\'" tr)
 	  ;; This seems to be ENTRY_ID(KEYWORD)
 	  (setq id (match-string 1 tr)
 		kwd (match-string 2 tr)
 		sch (match-string 3 tr)
 		p1 (org-find-entry-with-id id))
 	  ;; first check current buffer, then all files
-	  ;;(message "%s\n%s\n%s" id kwd sch)
 	  (if p1
 	    ;; there is an entry with this ID, mark it TODO
 	    (save-excursion
