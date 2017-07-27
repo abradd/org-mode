@@ -877,7 +877,8 @@ holding contextual information."
 	      (funcall (plist-get info :texinfo-format-headline-function)
 		       todo todo-type priority text tags))
 	     (contents
-	      (concat (if (org-string-nw-p contents)
+	      (concat "\n"
+		      (if (org-string-nw-p contents)
 			  (concat "\n" contents)
 			"")
 		      (let ((index (org-element-property :INDEX headline)))
@@ -1216,7 +1217,7 @@ holding contextual information."
 	       (cl-remove-if
 		(lambda (h)
 		  (org-not-nil (org-export-get-node-property :COPYING h t)))
-		(org-export-collect-headlines info nil scope))
+		(org-export-collect-headlines info 1 scope))
 	       cache))))
 
 ;;;; Node Property
