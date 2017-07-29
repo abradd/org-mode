@@ -348,8 +348,8 @@ This does two different kinds of triggers:
 		(org-schedule nil sch)))
 	    (when (setq p2 (org-id-find id))
 	      (save-excursion
-		(save-window-excursion
-		  (find-file (car p2))
+		(with-current-buffer
+		  (find-file-noselect (car p2))
 		  (goto-char (cdr p2))
 		  (org-todo kwd)
 		  ;;should probably put a catch here for malformed date/time
@@ -421,8 +421,8 @@ this ID property, that entry is also checked."
 	       
 	       ((setq p2 (org-id-find bl))
 		(save-excursion
-		  (save-window-excursion
-		    (find-file (car p2))
+		  (with-current-buffer
+		    (find-file-noselect (car p2))
 		    (goto-char (cdr p2))
 		    (unless (org-entry-is-done-p)
 		      (org-mark-ring-push)
